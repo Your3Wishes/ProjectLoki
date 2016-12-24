@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+	#region Variables
+	private Transform playerCamera;
+	
 	//Player movement variables.
 	public float movementMultiplier = 0.15f;
 	public float strafeMultiplier = 0.15f;
@@ -17,16 +20,25 @@ public class PlayerController : MonoBehaviour
 	Vector3 playerOriginPoint;
 
 	//Player launch variables.
-	public Vector3 launchVector;
+	private bool playerLaunched;
+	private float launchMagnitude;
 
 	//Game area boundaries.
 	public float minXBound, maxXBound, minYBound, maxYBound, minZBound, maxZBound;
+	#endregion
 
-	//Use this for initialization.
+	//Called upon object initialization.
 	void Start()
 	{
+		//Finds the player's camera.
+		playerCamera = transform.Find("PlayerCamera");
+
 		//Sets the player's origin point at game start.
 		playerOriginPoint = transform.position;
+
+		//Indicates the player has not been launched yet.
+		playerLaunched = false;
+		launchMagnitude = 0f;
 	}
 
 	//Update that is called once per frame.
@@ -56,6 +68,22 @@ public class PlayerController : MonoBehaviour
 		if(transform.position.z > maxZBound)
 			transform.position = new Vector3(transform.position.x, transform.position.y, maxZBound);
 		#endregion
+
+		//If the player has not been launched.
+		if(!playerLaunched)
+		{
+			//Lock the player to it's starting point.
+			transform.position = playerOriginPoint;
+
+			//Oscilate the launch magnitude between two values.
+			launchMagnitude = (Mathf.Sin(Time.time * 3) * 25) + 25;
+
+			//When the spacebar is pressed.
+			if(Input.GetKeyDown(KeyCode.Space))
+			{
+				launchPlayer(launchMagnitude);
+			}
+		}
 	}
 
 	//Update that is called every fixed timestamp duration.
@@ -66,6 +94,7 @@ public class PlayerController : MonoBehaviour
 		float strafeSpeed = Input.GetAxis("Horizontal") * strafeMultiplier;
 		transform.Translate(strafeSpeed, 0, movementSpeed);
 
+		#region Variable Calculation
 		//Calculates the speed of the player.
 		if(currentWorldPosition != previousWorldPosition)
 		{
@@ -76,6 +105,9 @@ public class PlayerController : MonoBehaviour
 
 		//Calculates the distance the player has traveled from the player's origin.
 		distanceTraveled = Vector3.Distance(transform.position, playerOriginPoint);
+		#endregion
+
+
 	}
 
 	public float getSpeed()
@@ -88,9 +120,21 @@ public class PlayerController : MonoBehaviour
 		return distanceTraveled;
 	}
 
-	//Used to launch the player from the initial starting position.
-	public void launchPlayer(Vector3 launchVector)
+	public bool hasPlayerBeenLaunched()
 	{
-		this.GetComponent<Rigidbody>().AddForce(launchVector, ForceMode.Impulse);
+		return playerLaunched;
+	}
+
+	public float getLaunchMagnitude()
+	{
+		return launchMagnitude;
+	}
+
+	//Used to launch the player from the initial starting position.
+	private void launchPlayer(float launchMagnitude)
+	{
+		//The player is launched in the direction the camera is facing.
+		playerLaunched = true;
+		this.GetComponent<Rigidbody>().AddForce(playerCamera.transform.forward * launchMagnitude, ForceMode.Impulse);
 	}
 }
