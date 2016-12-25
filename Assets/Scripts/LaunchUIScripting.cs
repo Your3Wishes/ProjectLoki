@@ -21,10 +21,17 @@ public class LaunchUIScripting : MonoBehaviour
 		//Oscillate the magnitude slider.
 		magnitudeSliderGameObject.GetComponent<Slider>().value = player.GetComponent<PlayerController>().getLaunchMagnitude();
 
-		//Hide the 
+		//Hide the launch UI once the player has been launched.
 		if(player.GetComponent<PlayerController>().hasPlayerBeenLaunched())
 		{
-			launchUICanvas.GetComponent<CanvasGroup>().alpha = 0;
+			StartCoroutine(hideLaunchUI());
 		}
+	}
+
+	//Using a coroutine to hide the UI allows you to specify a wait time before it dissapears.
+	IEnumerator hideLaunchUI()
+	{
+		yield return new WaitForSeconds(1);
+		launchUICanvas.GetComponent<CanvasGroup>().alpha = 0;
 	}
 }
