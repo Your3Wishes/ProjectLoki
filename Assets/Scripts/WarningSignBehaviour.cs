@@ -6,32 +6,36 @@ public class WarningSignBehaviour : MonoBehaviour
 {
 	public float scrollSpeed = 0.1f;
 	public float colorChangeSpeed = 2f;
+
 	Material warningSignMaterial;
-	private float xOffset;
-	private Color transitionColor;
-	private float transitionPercentage;
+	Transform warningSignLight;
+
+	float xAxisOffset;
+	Color transitionColor;
+	float transitionPercentage;
 
 	void Start()
 	{
 		warningSignMaterial = GetComponent<Renderer>().material;
 		warningSignMaterial.EnableKeyword("_EMISSION");
+		warningSignLight = this.transform.GetChild(0);
 	}
 
 	void Update()
 	{
-		//Scrolls the x offset of the texture along the plane.
-		xOffset += scrollSpeed * Time.deltaTime;
-		if(xOffset >= 1)
+		//Scrolls the x axis offset of the texture along the plane.
+		xAxisOffset += scrollSpeed * Time.deltaTime;
+		if(xAxisOffset >= 1)
 		{
-			xOffset = 0;
+			xAxisOffset = 0;
 		}
 
-		warningSignMaterial.mainTextureOffset = new Vector2(xOffset, 0);
+		warningSignMaterial.mainTextureOffset = new Vector2(xAxisOffset, 0);
 
-		//Changes the color of the emission.
+		//Changes the color of the emission and the light since emissions don't work properly.
 		transitionPercentage = (Mathf.Tan(Time.time * colorChangeSpeed) * .5f) + .5f;
 		transitionColor = Color.Lerp(Color.red, Color.black, transitionPercentage);
-		print(transitionPercentage);
 		warningSignMaterial.SetColor("_EmissionColor", transitionColor);
+		warningSignLight.GetComponent<Light>().color = transitionColor;
 	}
 }

@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
 	#region Variables
-	private Transform playerCamera;
+	Transform playerCamera;
 	
 	//Player movement variables.
 	public float movementMultiplier = 0.15f;
@@ -106,8 +106,6 @@ public class PlayerController : MonoBehaviour
 		//Calculates the distance the player has traveled from the player's origin.
 		distanceTraveled = Vector3.Distance(transform.position, playerOriginPoint);
 		#endregion
-
-
 	}
 
 	public float getSpeed()

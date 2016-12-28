@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
 	//Camera control variables.
-	private GameObject player;
+	GameObject player;
 	public float sensitivity = 2.0f;
 
 	// Use this for initialization
@@ -36,7 +36,9 @@ public class CameraController : MonoBehaviour
 		I've hardcoded the viewing angle to be between -85 and positive 85. I'll come back eventually
 		and insert a variable to allow for custom viewing angle restrictions.
 		*/
+
 		Vector3 rotation = transform.eulerAngles;
+
 		if(rotation.x > 0 && rotation.x < 90)
 		{
 			//Setting an intial rotation between 0 and 90 causes the camera to jump to 275 degrees.

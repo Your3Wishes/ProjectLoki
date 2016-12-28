@@ -8,20 +8,9 @@ public class LaunchpadBehaviour : MonoBehaviour
 	public float launchpadStrength;
 	public Vector3 launchpadDirection;
 
-	// Use this for initialization
-	void Start()
-	{
-
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
-
 	private void OnCollisionEnter(Collision collision)
 	{
+		//Launches the player should they collide with the launchpad's collision box.
 		if(collision.gameObject.name == "Player")
 		{
 			Rigidbody playerRigidbody = collision.gameObject.GetComponent<Rigidbody>();

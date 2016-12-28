@@ -10,7 +10,6 @@ public class OverlayUIScripting : MonoBehaviour
 	GameObject odometerGameObject;
 	GameObject player;
 
-	// Use this for initialization
 	void Start()
 	{
 		player = GameObject.Find("Player");
@@ -20,7 +19,10 @@ public class OverlayUIScripting : MonoBehaviour
 
 	private void Update()
 	{
+		//Sets the speedometer.
 		speedometerGameObject.GetComponent<Text>().text = "SPEED: " + Mathf.Round(player.GetComponent<PlayerController>().getSpeed()) + " m/s";
+
+		//Sets the odometer.
 		odometerGameObject.GetComponent<Text>().text = "DISTANCE: " + Mathf.Round(player.GetComponent<PlayerController>().getDistanceTraveled()) + " meters";
 	}
 }
