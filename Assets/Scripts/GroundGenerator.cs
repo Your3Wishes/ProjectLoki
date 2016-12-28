@@ -20,7 +20,6 @@ public class GroundGenerator : MonoBehaviour
 		{
 			generateGround();
 		}
-		print(groundIndex);
 	}
 
 	private void generateGround()
