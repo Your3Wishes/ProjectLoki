@@ -5,13 +5,13 @@ using UnityEngine;
 public class GroundGenerator : MonoBehaviour
 {
 	GameObject player;
-	GameObject ground;
+	GameObject[] groundPrefabArray;
 	int groundIndex;
 
 	void Start()
 	{
 		player = GameObject.Find("Player");
-		ground = Resources.Load("Prefabs/Ground", typeof(GameObject)) as GameObject;
+		groundPrefabArray = Resources.LoadAll<GameObject>("Ground");
 	}
 
 	void Update()
@@ -25,7 +25,8 @@ public class GroundGenerator : MonoBehaviour
 	//Advances the ground index and instantiates the next section of ground.
 	private void generateGround()
 	{
-		Instantiate(ground, new Vector3(0, 0, (groundIndex * 500) + 250), new Quaternion(0, 0, 0, 0), this.transform);
+		GameObject randomGround = groundPrefabArray[Random.Range(0, groundPrefabArray.Length)];
+		Instantiate(randomGround, new Vector3(0, 0, (groundIndex * 500) + 250), new Quaternion(0, 0, 0, 0), this.transform);
 		groundIndex++;
 	}
 }
