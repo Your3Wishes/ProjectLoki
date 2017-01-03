@@ -1,8 +1,7 @@
 # Project Loki
-
 Project Loki is the codename for a VR game built in the Unity 3D engine. It is still a major work in progress, but feel free to contribute or play the game for yourself!
 
-Repository branching is as follows:
+####Repository branch system:
 
 Master - This is the branch that contains the current stable version of the game.
 
