@@ -7,7 +7,6 @@ public class GroundGenerator : MonoBehaviour
 	GameObject player;
 	GameObject[] groundPrefabArray;
 	public int groundIndex;
-    public bool UseDynamicLaunchpads;
 
 	void Start()
 	{
@@ -26,13 +25,8 @@ public class GroundGenerator : MonoBehaviour
 	//Advances the ground index and instantiates the next section of ground.
 	private void generateGround()
 	{
-        GameObject randomGround;
-        // Using dynamic launchpad spawning only?
-        if (UseDynamicLaunchpads)
-            randomGround = groundPrefabArray[3];
-        else
-            randomGround = groundPrefabArray[Random.Range(0, groundPrefabArray.Length)];
-        Instantiate(randomGround, new Vector3(0, 0, (groundIndex * 500) + 250), new Quaternion(0, 0, 0, 0), this.transform);
+		GameObject randomGround = groundPrefabArray[Random.Range(0, groundPrefabArray.Length)];
+		Instantiate(randomGround, new Vector3(0, 0, (groundIndex * 500) + 250), new Quaternion(0, 0, 0, 0), this.transform);
 		groundIndex++;
 	}
 }
