@@ -5,46 +5,50 @@ public class PlayerController : MonoBehaviour
 {
 	#region Variables
 	Transform playerCamera;
+	
+	// Player movement variables.
+	public float movementMultiplier = 1f;
+	public float strafeMultiplier = 1f;
 
-	//Rocket pack variables.
+	// Rocket pack variables.
 	public float jetpackStrength = 1;
 
-	//Variables used to calculate current speed.
+	// Variables used to calculate current speed.
 	private float playerSpeed = 0;
 	Vector3 currentWorldPosition;
 	Vector3 previousWorldPosition;
 
-	//Variables used to calculate distance traveled.
+	// Variables used to calculate distance traveled.
 	private float distanceTraveled = 0;
 	Vector3 playerOriginPoint;
 
-	//Player launch variables.
+	// Player launch variables.
 	private bool playerLaunched;
 	private float launchMagnitude;
 	public float launchMultiplier = 1f;
 
-	//Game area boundaries.
+	// Game area boundaries.
 	public float minXBound, maxXBound, minYBound, maxYBound, minZBound, maxZBound;
 	#endregion
 
-	//Called upon object initialization.
+	// Called upon object initialization.
 	void Start()
 	{
-		//Finds the player's camera.
+		// Finds the player's camera.
 		playerCamera = transform.Find("PlayerCamera");
-
-		//Sets the player's origin point at game start.
+		
+		// Sets the player's origin point at game start.
 		playerOriginPoint = transform.position;
 
-		//Indicates the player has not been launched yet.
+		// Indicates the player has not been launched yet.
 		playerLaunched = false;
 		launchMagnitude = 0f;
 	}
 
-	//Update that is called once per frame.
+	// Update that is called once per frame.
 	void Update()
 	{
-		//Game area boundary clamping.
+		// Game area boundary clamping.
 		#region Game Area Boundary Logic
 		/*
 		Game area boundary clamping logic prevents the player from surpassing certain values
@@ -69,38 +73,43 @@ public class PlayerController : MonoBehaviour
 			transform.position = new Vector3(transform.position.x, transform.position.y, maxZBound);
 		#endregion
 
-		//If the player has not been launched.
+		// If the player has not been launched.
 		if(!playerLaunched)
 		{
-			//Lock the player to it's starting point.
+			// Lock the player to it's starting point.
 			transform.position = playerOriginPoint;
 
-			//Oscilate the launch magnitude between two values.
+			// Oscilate the launch magnitude between two values.
 			launchMagnitude = ((Mathf.Sin(Time.time * 3) * 25) + 25);
 
-			//Launch the player.
+			// Launch the player.
 			if(Input.GetKeyDown(KeyCode.Space))
 			{
 				launchPlayer(launchMagnitude);
 			}
 		}
 
-		//Reset the player.
+		// Reset the player.
 		if(Input.GetKeyDown(KeyCode.Return))
 		{
 			resetPlayer();
 		}
 
-		//Rockets the player in the direction their facing.
+		// Rockets the player in the direction their facing.
 		if(Input.GetKey(KeyCode.Space))
 		{
 			useJetPack();
 		}
 	}
 
-	//Update that is called every fixed timestamp duration.
+	// Update that is called every fixed timestamp duration.
 	void FixedUpdate()
 	{
+		//Player movement.
+		float movementSpeed = Input.GetAxis("Vertical") * movementMultiplier;
+		float strafeSpeed = Input.GetAxis("Horizontal") * strafeMultiplier;
+		transform.Translate(strafeSpeed, 0, movementSpeed);
+
 		#region Variable Calculation
 		//Calculates the speed of the player.
 		if(currentWorldPosition != previousWorldPosition)
@@ -135,37 +144,37 @@ public class PlayerController : MonoBehaviour
 		return launchMagnitude;
 	}
 
-	//Used to launch the player from the initial starting position.
+	// Used to launch the player from the initial starting position.
 	private void launchPlayer(float launchMagnitude)
 	{
-		//The player is launched in the direction the camera is facing.
+		// The player is launched in the direction the camera is facing.
 		playerLaunched = true;
 		GetComponent<Rigidbody>().AddForce(playerCamera.transform.forward * launchMagnitude * launchMultiplier, ForceMode.Impulse);
 	}
 
-	//Used to reset the player.
+	// Used to reset the player.
 	private void resetPlayer()
 	{
-		//Player has not been launched.
+		// Player has not been launched.
 		playerLaunched = false;
 
-		//Resets the ground index to 0.
+		// Resets the ground index to 0.
 		GameObject.Find("GroundGenerator").GetComponent<GroundGenerator>().groundIndex = 0;
 
-		//Deletes all ground objects that have been made.
+		// Deletes all ground objects that have been made.
 		foreach(Transform child in GameObject.Find("GroundGenerator").transform)
 		{
 			GameObject.Destroy(child.gameObject);
 		}
 
-		//Resets the player position.
+		// Resets the player position.
 		transform.position = playerOriginPoint;
 
-		//Resets the rigidbody velocity.
+		// Resets the rigidbody velocity.
 		GetComponent<Rigidbody>().velocity = Vector3.zero;
 	}
 
-	//Allows the player to travel in the direction their facing.
+	// Allows the player to travel in the direction their facing.
 	private void useJetPack()
 	{
 		GetComponent<Rigidbody>().AddForce(playerCamera.transform.forward * jetpackStrength, ForceMode.VelocityChange);
