@@ -26,6 +26,10 @@ public class LaunchUIScripting : MonoBehaviour
 		{
 			StartCoroutine(hideLaunchUI());
 		}
+		else
+		{
+			showLaunchUI();
+		}
 	}
 
 	//Using a coroutine to hide the UI allows you to specify a wait time before it dissapears.
@@ -33,5 +37,10 @@ public class LaunchUIScripting : MonoBehaviour
 	{
 		yield return new WaitForSeconds(1);
 		launchUICanvas.GetComponent<CanvasGroup>().alpha = 0;
+	}
+
+	public void showLaunchUI()
+	{
+		launchUICanvas.GetComponent<CanvasGroup>().alpha = 1;
 	}
 }

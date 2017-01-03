@@ -6,7 +6,7 @@ public class GroundGenerator : MonoBehaviour
 {
 	GameObject player;
 	GameObject[] groundPrefabArray;
-	int groundIndex;
+	public int groundIndex;
 
 	void Start()
 	{

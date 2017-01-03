@@ -29,7 +29,7 @@ public class CameraController : MonoBehaviour
 
 		//Vertical mouse movement.
 		/*
-		Massive clusterfuck figuring this out. Due to the way Unity handles object rotation,
+		Massive pain figuring this out. Due to the way Unity handles object rotation,
 		it is not possible to simply clamp the vertical angle to -85, 85. Instead of going from 0 to -1,
 		the engine decides to rotate from 0 to 359, treating 0 as 360. The solution to this is to add 
 		360 to all x rotation values between 0 and a number larger than the minimum vertical view angle.

@@ -5,10 +5,9 @@ public class PlayerController : MonoBehaviour
 {
 	#region Variables
 	Transform playerCamera;
-	
-	//Player movement variables.
-	public float movementMultiplier = 0.15f;
-	public float strafeMultiplier = 0.15f;
+
+	//Rocket pack variables.
+	public float jetpackStrength = 1;
 
 	//Variables used to calculate current speed.
 	private float playerSpeed = 0;
@@ -22,6 +21,7 @@ public class PlayerController : MonoBehaviour
 	//Player launch variables.
 	private bool playerLaunched;
 	private float launchMagnitude;
+	public float launchMultiplier = 1f;
 
 	//Game area boundaries.
 	public float minXBound, maxXBound, minYBound, maxYBound, minZBound, maxZBound;
@@ -76,24 +76,31 @@ public class PlayerController : MonoBehaviour
 			transform.position = playerOriginPoint;
 
 			//Oscilate the launch magnitude between two values.
-			launchMagnitude = (Mathf.Sin(Time.time * 3) * 25) + 25;
+			launchMagnitude = ((Mathf.Sin(Time.time * 3) * 25) + 25);
 
-			//When the spacebar is pressed.
+			//Launch the player.
 			if(Input.GetKeyDown(KeyCode.Space))
 			{
 				launchPlayer(launchMagnitude);
 			}
+		}
+
+		//Reset the player.
+		if(Input.GetKeyDown(KeyCode.Return))
+		{
+			resetPlayer();
+		}
+
+		//Rockets the player in the direction their facing.
+		if(Input.GetKey(KeyCode.Space))
+		{
+			useJetPack();
 		}
 	}
 
 	//Update that is called every fixed timestamp duration.
 	void FixedUpdate()
 	{
-		//Player movement.
-		float movementSpeed = Input.GetAxis("Vertical") * movementMultiplier;
-		float strafeSpeed = Input.GetAxis("Horizontal") * strafeMultiplier;
-		transform.Translate(strafeSpeed, 0, movementSpeed);
-
 		#region Variable Calculation
 		//Calculates the speed of the player.
 		if(currentWorldPosition != previousWorldPosition)
@@ -133,6 +140,34 @@ public class PlayerController : MonoBehaviour
 	{
 		//The player is launched in the direction the camera is facing.
 		playerLaunched = true;
-		this.GetComponent<Rigidbody>().AddForce(playerCamera.transform.forward * launchMagnitude, ForceMode.Impulse);
+		GetComponent<Rigidbody>().AddForce(playerCamera.transform.forward * launchMagnitude * launchMultiplier, ForceMode.Impulse);
+	}
+
+	//Used to reset the player.
+	private void resetPlayer()
+	{
+		//Player has not been launched.
+		playerLaunched = false;
+
+		//Resets the ground index to 0.
+		GameObject.Find("GroundGenerator").GetComponent<GroundGenerator>().groundIndex = 0;
+
+		//Deletes all ground objects that have been made.
+		foreach(Transform child in GameObject.Find("GroundGenerator").transform)
+		{
+			GameObject.Destroy(child.gameObject);
+		}
+
+		//Resets the player position.
+		transform.position = playerOriginPoint;
+
+		//Resets the rigidbody velocity.
+		GetComponent<Rigidbody>().velocity = Vector3.zero;
+	}
+
+	//Allows the player to travel in the direction their facing.
+	private void useJetPack()
+	{
+		GetComponent<Rigidbody>().AddForce(playerCamera.transform.forward * jetpackStrength, ForceMode.VelocityChange);
 	}
 }
